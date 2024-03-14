@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="connection.username">root</property>
+    <property name="connection.password">password</property>
+
+
+    <!-- Database connection settings -->
+    <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+
+    <!--Creates database, if it does not exist-->
+    <property name="connection.url">jdbc:mysql://localhost:3306/Dayleet?createDatabaseIfNotExist=true</property>
+
+    <!-- MySQL DB dialect -->
+    <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+    <!-- print all executed SQL on console -->
+    <property name="hibernate.show_sql" >true </property>
+    <property name="hibernate.format_sql" >true </property>
+
+    <property name="hibernate.hbm2ddl.auto">create-drop</property>
+    <!--   Mapping entity file -->
+    <mapping class="org.johnnyhe.dayleet.model.questionCollection"/>
+    <mapping class="org.johnnyhe.dayleet.model.questionList"/>
+    <mapping class="org.johnnyhe.dayleet.model.question"/>
+
+    <!-- DB schema will be updated if needed -->
+  </session-factory>
+</hibernate-configuration>
