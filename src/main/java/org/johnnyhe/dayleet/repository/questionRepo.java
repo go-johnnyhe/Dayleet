@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface questionRepo extends JpaRepository<question, Long> {
+    question findByName(String name);
     boolean existsByNameAndCategoryAndDifficultyAndDescription(String name, String category, Difficulty difficulty, String description);
     question findByNameAndCategoryAndDifficultyAndDescription(String name, String category, Difficulty difficulty, String description);
 }

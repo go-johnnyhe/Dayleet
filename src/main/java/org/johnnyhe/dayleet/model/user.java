@@ -22,31 +22,12 @@ public class user {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String username;
     private LocalDate firstTimeLogin;
+    private boolean completedSetup;
     private int numDailyProblems;
     private boolean shuffledView;
     private boolean darkMode;
     private String password;
-    @Override
-    public String toString() {
-        return "user{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", firstTimeLogin=" + firstTimeLogin +
-                '}';
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        user user = (user) o;
-        return id == user.id && Objects.equals(name, user.name) && Objects.equals(firstTimeLogin, user.firstTimeLogin);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, firstTimeLogin);
-    }
 }
