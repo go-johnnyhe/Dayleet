@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Setup</title>
+</head>
+<body>
+  <h1>Setup</h1>
+  <form th:action="@{/setup}" method="post">
+    <div>
+      <label for="questionSet">Select the set of leetcode questions:</label>
+      <select id="questionSet" name="questionSet">
+        <option th:each="questionSet : ${questionSets}" th:value="${questionSet}" th:text="${questionSet}"></option>
+      </select>
+    </div>
+    <div>
+      <label for="newQuestionsPerDay">New questions per day</label>
+      <input type="range" id="newQuestionsPerDay" name="newQuestionsPerDay" min="1" max="10" value="3" onchange="updateCompletionDate()">
+      <span id="newQuestionsValue">3</span>
+    </div>
+    <div>
+      <label for="completionDate">Preferred completion date:</label>
+      <input type="date" id="completionDate" name="completionDate" onchange="updateNewQuestionsPerDay()">
+    </div>
+    <button type="submit">Save</button>
+  </form>
+
+  <script>
+    const questionSet = document.getElementById("questionSet");
+    const newQuestionsPerDay = document.getElementById('newQuestionsPerDay');
+    const newQuestionsValue = document.getElementById('newQuestionsValue');
+    const completionDate = document.getElementById('completionDate');
+
+    let totalQuestions = 75;
+
+    questionSet.addEventListener('change', function() {
+      const selectedQuestionSet = questionSet.value;
+      switch (selectedQuestionSet) {
+        case 'Blind75':
+          totalQuestions = 75;
+          break;
+        case 'Neetcode150':
+          totalQuestions = 150;
+          break;
+        case 'Grind169':
+          totalQuestions = 169;
+          break;
+        default:
+          totalQuestions = 75;
+      }
+      updateCompletionDate();
+    })
+
+    const defaultCompletionDate = new Date();
+    defaultCompletionDate.setDate(defaultCompletionDate.getDate() + 25);
+    completionDate.value = defaultCompletionDate.toISOString().split('T')[0];
+
+    function updateCompletionDate() {
+      const numNewQuestions = parseInt(newQuestionsPerDay.value);
+      newQuestionsValue.textContent = numNewQuestions;
+
+
+      const numDays = Math.ceil(totalQuestions / numNewQuestions);
+      const newCompletionDate = new Date();
+      newCompletionDate.setDate(newCompletionDate.getDate() + numDays);
+      completionDate.value = newCompletionDate.toISOString().split('T')[0];
+    }
+
+    function updateNewQuestionsPerDay() {
+      const selectedCompletionDate = new Date(completionDate.value);
+      const currentDate = new Date();
+      const timeDiff = selectedCompletionDate - currentDate.getTime();
+      const numDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      const numNewQuestions = Math.ceil(totalQuestions / numDays);
+      newQuestionsPerDay.value = numNewQuestions;
+      newQuestionsValue.textContent = numNewQuestions;
+    }
+    newQuestionsPerDay.value = newQuestionsValue.textContent;
+  </script>
+</body>
+</html>

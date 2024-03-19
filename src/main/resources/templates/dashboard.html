@@ -7,6 +7,32 @@
 <body>
   <h1>Welcome, <span th:text="${username}"></span>!</h1>
   <p>This is your dashboard content.</p>
+  <br>
+  <label for="file">Progress:</label>
+  <progress id="file" value="32" max="100"> 32% </progress>
+  <br>
+  <h2>Questions</h2>
+  <table>
+      <thead>
+      <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Difficulty</th>
+          <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="questionListItem : ${questionList}">
+          <td th:text="${questionListItem.question.name}"></td>
+          <td th:text="${questionListItem.question.category}"></td>
+          <td th:text="${questionListItem.question.difficulty}"></td>
+          <td th:text="${questionListItem.question.description}"></td>
+      </tr>
+      </tbody>
+  </table>
+
+  <br>
+
   <form th:action="@{/logout}" method="post">
     <button type="submit">Logout</button>
   </form>

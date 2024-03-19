@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" th:href="@{/editor.css}">
+    <title>Editor</title>
+</head>
+<body>
+<!--    <h1>Editor</h1>-->
+    <div class="container">
+        <div class="left-side">
+            <h2 th:text="${problem.name}"></h2>
+            <p th:text="${problem.description}"></p>
+        </div>
+        <div class="top-right">
+            <div id="editor" style="height: 300px; width: 100%;"></div>
+            <!--            <textarea id="input-code" rows="4" col="50" th:text="${placeholder}" placeholder="Write your code here..."></textarea>-->
+        </div>
+        <div class="bottom-right"><pre id="output"></pre></div>
+    </div>
+<button onclick="executeCode()">Run</button>
+
+<script th:inline="javascript">
+    let editorLang = "python"
+    let editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode(`ace/mode/${editorLang}`);
+    function executeCode() {
+
+        // const beforeInput = document.getElementById("input-code");
+        // const input = beforeInput.value;
+        const input = editor.getValue();
+        let output = document.getElementById("output");
+
+        const data =  {
+            sourceCode: input,
+            languageId: 71
+        }
+
+        let token = '';
+
+        const apiURLPostSubmission =  "https://judge0-ce.p.rapidapi.com/submissions"
+        console.log("here's what you inputted haha:", data.sourceCode);
+        fetch(apiURLPostSubmission, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
+            },
+            body: JSON.stringify({
+                'source_code': data.sourceCode,
+                'language_id': 71,
+            }),
+            }).then(res => res.json())
+            .then(data => {
+                console.log("Yo you did it again", data)
+                token = data.token;
+                console.log("Here's token,", token)
+                function pollForResult() {
+                    const apiURLGetSubmissionResult = `https://judge0-ce.p.rapidapi.com/submissions/${token}`;
+                    fetch(apiURLGetSubmissionResult, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
+                        }
+                    }).then(res => res.json())
+                        .then(data => {
+                            console.log(data);
+                            if (data.status && data.status.id <= 2) { // Status IDs 1 and 2 are "In Queue" and "Processing"
+                                console.log("Result is still in queue/processing, checking again...");
+                                setTimeout(pollForResult, 1000); // Check again after 2 seconds
+                            } else {
+                                // We have a completed result, handle it here
+                                console.log("Execution result: ", data);
+                                output.textContent = data.stdout || "no output";
+                            }
+                        }).catch((err) => {
+                        console.log("I had trouble getting the submission result, rip. Details here: ", err);
+                    });
+                }
+
+                // Initial call to start polling
+                pollForResult();
+            })
+            .catch((err) => {
+                console.log("couldn't successfully upload the submission",err);
+            });
+        // const apiURLGetSubmissionResult = `https://judge0-ce.p.rapidapi.com/submissions/${}`
+        // fetch()
+
+    }
+</script>
+</body>
+</html>

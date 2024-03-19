@@ -23,9 +23,10 @@ public class user {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
-    private LocalDate firstTimeLogin;
     private boolean completedSetup;
+    private String questionSet;
     private int numDailyProblems;
+    private LocalDate completionDate;
     private boolean shuffledView;
     private boolean darkMode;
     private String password;
