@@ -1,10 +1,14 @@
 package org.johnnyhe.dayleet.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.johnnyhe.dayleet.model.*;
 import org.johnnyhe.dayleet.repository.*;
+import org.johnnyhe.dayleet.service.Judge0Service;
+import org.johnnyhe.dayleet.service.ProblemService;
 import org.johnnyhe.dayleet.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class AuthController {
@@ -22,15 +24,14 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final userRepo myUserRepo;
     private final questionListRepo myQuestionListRepo;
-
     private final questionRepo myQuestionRepo;
-
     private final questionPlaceholderRepo myQuestionPlaceHolderRepo;
-
     private final codingLangRepo myCodingLangRepo;
+    private final ProblemService problemService;
+    private final Judge0Service myJudge0Service;
 
     @Autowired
-    public AuthController(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder, userRepo myUserRepo, questionListRepo myQuestionListRepo, questionRepo myQuestionRepo, questionPlaceholderRepo myQuestionPlaceHolderRepo, codingLangRepo myCodingLangRepo) {
+    public AuthController(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder, userRepo myUserRepo, questionListRepo myQuestionListRepo, questionRepo myQuestionRepo, questionPlaceholderRepo myQuestionPlaceHolderRepo, codingLangRepo myCodingLangRepo, ProblemService problemService, Judge0Service myJudge0Service) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.myUserRepo = myUserRepo;
@@ -38,6 +39,8 @@ public class AuthController {
         this.myQuestionRepo = myQuestionRepo;
         this.myQuestionPlaceHolderRepo = myQuestionPlaceHolderRepo;
         this.myCodingLangRepo = myCodingLangRepo;
+        this.problemService = problemService;
+        this.myJudge0Service = myJudge0Service;
     }
 
     @GetMapping("/login")
@@ -121,5 +124,89 @@ public class AuthController {
             }
         }
         return "editor";
+    }
+
+    @PostMapping("/execute")
+    public ResponseEntity<?> executeCode(@RequestBody CodeSubmissionRequest request) throws JsonProcessingException {
+        String code = request.getCode();
+        int languageId = request.getLanguageId();
+
+        System.out.println("Received CodeSubmissionRequest: " + request);
+
+        Long questionId = request.getQuestionId();
+        if (questionId == null) {
+            return ResponseEntity.badRequest().body("Question ID is required.");
+        }
+
+        question myQuestion = problemService.findQuestionById(request.getQuestionId());
+        if (myQuestion == null) {
+            return ResponseEntity.badRequest().body("Invalid question id");
+        }
+
+        List<String> testCases = problemService.getTestCases((long) myQuestion.getId());
+        List<String> expectedOutputs = problemService.getExpectedOutputs((long) myQuestion.getId());
+
+        List<Boolean> results = new ArrayList<>();
+
+        for (int i = 0; i < testCases.size(); i++) {
+            String testCase = testCases.get(i);
+            String expectedOutput = expectedOutputs.get(i);
+
+            String actualOutput = myJudge0Service.executeCode(code, languageId, testCase);
+
+            boolean isCorrect;
+            if (actualOutput == null) {
+                isCorrect = false; // Consider null output as incorrect
+            } else {
+                isCorrect = actualOutput.trim().equals(expectedOutput.trim());
+            }
+            results.add(isCorrect);
+        }
+
+        boolean allPassed = results.stream().allMatch(result -> result);
+
+//exp
+        List<Map<String, Object>> testCaseResults = new ArrayList<>();
+
+        for (int i = 0; i < testCases.size(); i++) {
+            String testCase = testCases.get(i);
+            String expectedOutput = expectedOutputs.get(i);
+
+            String actualOutput = myJudge0Service.executeCode(code, languageId, testCase);
+
+            boolean isCorrect = actualOutput != null && actualOutput.trim().equals(expectedOutput.trim());
+            results.add(isCorrect);
+
+            Map<String, Object> testCaseResult = new HashMap<>();
+            testCaseResult.put("testCase", testCase);
+            testCaseResult.put("expectedOutput", expectedOutput);
+            testCaseResult.put("actualOutput", actualOutput);
+            testCaseResult.put("isCorrect", isCorrect);
+            testCaseResults.add(testCaseResult);
+        }
+
+//        exp end
+
+        long passedTests = results.stream().filter(Boolean::booleanValue).count();
+
+        // Prepare detailed response
+        Map<String, Object> response = new HashMap<>();
+        response.put("allPassed", allPassed);
+        response.put("totalTests", testCases.size());
+        response.put("passedTests", passedTests);
+
+        List<String> detailMessages = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            if (!results.get(i)) {
+                detailMessages.add(String.format("Test Case %d Failed", i + 1));
+            }
+        }
+
+        if (!detailMessages.isEmpty()) {
+            response.put("details", detailMessages);
+        }
+
+        response.put("testCaseResults", testCaseResults);
+        return ResponseEntity.ok(response);
     }
 }

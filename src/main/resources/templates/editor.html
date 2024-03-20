@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" th:href="@{/editor.css}">
     <title>Editor</title>
@@ -14,11 +16,14 @@
             <h2 th:text="${problem.name}"></h2>
             <p th:text="${problem.description}"></p>
         </div>
-        <div class="top-right">
-            <div id="editor" style="height: 300px; width: 100%;"></div>
+<!--        <div class="top-right">-->
+            <div id="editor" style="height: 500px; width: 100%;"></div>
             <!--            <textarea id="input-code" rows="4" col="50" th:text="${placeholder}" placeholder="Write your code here..."></textarea>-->
+<!--        </div>-->
+        <div class="bottom-right">
+            <pre id="output"></pre>
+            <div id="testCaseResults"></div>
         </div>
-        <div class="bottom-right"><pre id="output"></pre></div>
     </div>
 <button onclick="executeCode()">Run</button>
 
@@ -27,69 +32,117 @@
     let editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode(`ace/mode/${editorLang}`);
+
+    let problemId = [[${problem.id}]]
+
     function executeCode() {
 
         // const beforeInput = document.getElementById("input-code");
         // const input = beforeInput.value;
-        const input = editor.getValue();
-        let output = document.getElementById("output");
+        let code = editor.getValue();
+        // let output = document.getElementById("output");
 
-        const data =  {
-            sourceCode: input,
-            languageId: 71
-        }
+        console.log('Problem ID:', problemId);
+        console.log(typeof "1");
 
-        let token = '';
 
-        const apiURLPostSubmission =  "https://judge0-ce.p.rapidapi.com/submissions"
-        console.log("here's what you inputted haha:", data.sourceCode);
-        fetch(apiURLPostSubmission, {
-            method: "POST",
+        fetch('/execute', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+
             },
             body: JSON.stringify({
-                'source_code': data.sourceCode,
-                'language_id': 71,
-            }),
-            }).then(res => res.json())
+                questionId: problemId,
+                code: code,
+                languageId: 71
+            })
+        })
+            .then(res => res.json())
             .then(data => {
-                console.log("Yo you did it again", data)
-                token = data.token;
-                console.log("Here's token,", token)
-                function pollForResult() {
-                    const apiURLGetSubmissionResult = `https://judge0-ce.p.rapidapi.com/submissions/${token}`;
-                    fetch(apiURLGetSubmissionResult, {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                            'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
-                        }
-                    }).then(res => res.json())
-                        .then(data => {
-                            console.log(data);
-                            if (data.status && data.status.id <= 2) { // Status IDs 1 and 2 are "In Queue" and "Processing"
-                                console.log("Result is still in queue/processing, checking again...");
-                                setTimeout(pollForResult, 1000); // Check again after 2 seconds
-                            } else {
-                                // We have a completed result, handle it here
-                                console.log("Execution result: ", data);
-                                output.textContent = data.stdout || "no output";
-                            }
-                        }).catch((err) => {
-                        console.log("I had trouble getting the submission result, rip. Details here: ", err);
+                let resultMessage = "Result: ";
+                if (data.allPassed) {
+                    resultMessage += "All test cases passed!";
+                } else {
+                    resultMessage += "Some test cases failed. ";
+                    resultMessage += "Passed " + data.passedTests + " out of " + data.totalTests + ".";
+                    if (data.details) {
+                        resultMessage += " Failed cases: " + data.details.join(", ");
+                    }
+                }
+
+                let testCaseResultsHtml = "";
+                if (data.testCaseResults) {
+                    data.testCaseResults.forEach((result, index) => {
+                        testCaseResultsHtml += `<div>
+                    <h4>Test Case ${index + 1}</h4>
+                    <p>Test Case: ${result.testCase}</p>
+                    <p>Expected Output: ${result.expectedOutput}</p>
+                    <p>Actual Output: ${result.actualOutput}</p>
+                    <p>Result: ${result.isCorrect ? 'Passed' : 'Failed'}</p>
+                </div>`;
                     });
                 }
 
-                // Initial call to start polling
-                pollForResult();
+                document.getElementById("output").textContent = resultMessage;
+                document.getElementById("testCaseResults").innerHTML = testCaseResultsHtml;
             })
-            .catch((err) => {
-                console.log("couldn't successfully upload the submission",err);
-            });
-        // const apiURLGetSubmissionResult = `https://judge0-ce.p.rapidapi.com/submissions/${}`
-        // fetch()
+            .catch((err) => console.log("you have an error on the js frontend fetch",err))
+
+
+        // const data =  {
+        //     sourceCode: input,
+        //     languageId: 71
+        // }
+
+        // let token = '';
+        //
+        // const apiURLPostSubmission =  "https://judge0-ce.p.rapidapi.com/submissions"
+        // console.log("here's what you inputted haha:", data.sourceCode);
+        // fetch(apiURLPostSubmission, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
+        //     },
+        //     body: JSON.stringify({
+        //         'source_code': data.sourceCode,
+        //         'language_id': 71,
+        //     }),
+        //     }).then(res => res.json())
+        //     .then(data => {
+        //         console.log("Yo you did it again", data)
+        //         token = data.token;
+        //         console.log("Here's token,", token)
+        //         function pollForResult() {
+        //             const apiURLGetSubmissionResult = `https://judge0-ce.p.rapidapi.com/submissions/${token}`;
+        //             fetch(apiURLGetSubmissionResult, {
+        //                 method: "GET",
+        //                 headers: {
+        //                     "Content-Type": "application/json",
+        //                     'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
+        //                 }
+        //             }).then(res => res.json())
+        //                 .then(data => {
+        //                     console.log(data);
+        //                     if (data.status && data.status.id <= 2) { // Status IDs 1 and 2 are "In Queue" and "Processing"
+        //                         console.log("Result is still in queue/processing, checking again...");
+        //                         setTimeout(pollForResult, 1000); // Check again after 2 seconds
+        //                     } else {
+        //                         console.log("Execution result: ", data);
+        //                         output.textContent = data.stdout || "no output";
+        //                     }
+        //                 }).catch((err) => {
+        //                 console.log("I had trouble getting the submission result, rip. Details here: ", err);
+        //             });
+        //         }
+        //
+        //         pollForResult();
+        //     })
+        //     .catch((err) => {
+        //         console.log("couldn't successfully upload the submission",err);
+        //     });
 
     }
 </script>
