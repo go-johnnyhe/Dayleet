@@ -33,71 +33,91 @@ public class Judge0Service {
     }
 
     public String executeCode(String code, Integer languageId, String testCase) {
-        // Encode the input code to base64
-        String encodedCode = Base64.getEncoder().encodeToString(code.getBytes());
+        // splitting example
+        String processedCode = getProcessedCode(code, testCase);
 
-        // Optionally, encode the test case to base64 if your application requires it
+        // Encoding
+        String encodedCode = Base64.getEncoder().encodeToString(processedCode.getBytes());
         String encodedTestCase = Base64.getEncoder().encodeToString(testCase.getBytes());
 
-        HttpResponse<String> response = Unirest.post("https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&fields=*")
+        // Submission
+        HttpResponse<String> response = Unirest.post(judge0ApiUrl + "?base64_encoded=true&fields=*")
                 .header("content-type", "application/json")
-                .header("X-RapidAPI-Key", "a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d")
+                .header("X-RapidAPI-Key", judge0ApiKey)
                 .header("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com")
                 .body(String.format("{\n" +
-                        "    \"language_id\": %d,\n" + // Dynamic language ID
-                        "    \"source_code\": \"%s\",\n" + // Dynamic source code, now base64 encoded
-                        "    \"stdin\": \"%s\"\n" + // Dynamic stdin, base64 encoded if necessary
+                        "    \"language_id\": %d,\n" +
+                        "    \"source_code\": \"%s\",\n" +
+                        "    \"stdin\": \"%s\"\n" +
                         "}", languageId, encodedCode, encodedTestCase))
                 .asString();
 
-        String responseBody = response.getBody();
-        System.out.println("Here's your response body:");
-        System.out.println(responseBody);
+        // Token extraction
         ObjectMapper mapper = new ObjectMapper();
+        String token;
         try {
-            JsonNode rootNode = mapper.readTree(responseBody);
-            String token = rootNode.path("token").asText();
-            System.out.println(token);
-            HttpResponse<String> getResponse = Unirest.get("https://judge0-ce.p.rapidapi.com/submissions/" + token + "?base64_encoded=false&fields=*")
-                    .header("X-RapidAPI-Key", "a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d")
-                    .header("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com")
-                    .asString();
-            String getResponseBody = getResponse.getBody();
-            System.out.println(getResponseBody);
-
-            JsonObject jsonResponse = JsonParser.parseString(getResponseBody).getAsJsonObject();
-            int statusId = jsonResponse.get("status").getAsJsonObject().get("id").getAsInt();
-
-// Polling loop
-            while (statusId == 1 || statusId == 2) { // 1 for "In Queue", 2 for "Processing"
-                // Wait before checking again
-                try {
-                    Thread.sleep(2000); // Wait for 2 seconds
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    e.printStackTrace();
-                }
-
-                // Check status again
-                getResponse = Unirest.get("https://judge0-ce.p.rapidapi.com/submissions/" + token + "?base64_encoded=false&fields=*")
-                        .header("X-RapidAPI-Key", "a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d")
-                        .header("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com")
-                        .asString();
-                getResponseBody = getResponse.getBody();
-                System.out.println(getResponseBody);
-
-                jsonResponse = JsonParser.parseString(getResponseBody).getAsJsonObject();
-                statusId = jsonResponse.get("status").getAsJsonObject().get("id").getAsInt();
-            }
-
-// Final status
-            System.out.println("Final status: " + jsonResponse.get("status").getAsJsonObject().get("description").getAsString());
-
+            JsonNode rootNode = mapper.readTree(response.getBody());
+            token = rootNode.path("token").asText();
+            System.out.println("Here's token" + token);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return "Error processing submission response";
         }
 
-        return "";
+        // Polling for result
+        String stdout = null;
+        try {
+            boolean isProcessing = true;
+            while (isProcessing) {
+                Thread.sleep(2000); // Delay before checking status again
+                HttpResponse<String> getResponse = Unirest.get(judge0ApiUrl + token + "?base64_encoded=false&fields=*")
+                        .header("X-RapidAPI-Key", judge0ApiKey)
+                        .header("X-RapidAPI-Host", "judge0-ce.p.rapidapi.com")
+                        .asString();
+
+                JsonNode jsonResponse = mapper.readTree(getResponse.getBody());
+                int statusId = jsonResponse.path("status").path("id").asInt();
+                isProcessing = statusId == 1 || statusId == 2; // 1: In Queue, 2: Processing
+
+                if (!isProcessing) {
+                    if (jsonResponse.has("stderr")) {
+                        System.out.println("Stderr 1: " + jsonResponse.path("stderr").asText());
+                    }
+                    if (jsonResponse.has("message")) {
+                        System.out.println("Message: " + jsonResponse.path("message").asText());
+                    }
+                    stdout = jsonResponse.path("stdout").asText();
+                    System.out.println(stdout);
+                }
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return "Execution was interrupted";
+        } catch (JsonProcessingException e) {
+            return "Error processing execution result";
+        }
+
+        return stdout != null ? stdout : "No output or execution error";
     }
 
+    private static String getProcessedCode(String code, String testCase) {
+        String[] parts = testCase.split("], ");
+        String arrayPart = parts[0] + "]"; // Adds the closing bracket back
+        String integerPart = parts[1];
+
+        System.out.println("the following two prints are test cases");
+        System.out.println(arrayPart);
+        System.out.println(integerPart);
+        // Ensure to properly extract and format the test case data
+        // This might involve more sophisticated parsing depending on the exact format and complexity of your test cases
+
+        // Prepend the necessary import statement to the user's code
+        String finalCode = "from typing import List\n" + code;
+
+        // Insert the dynamically determined test case values into the processed code
+        return finalCode + "\nif __name__ == \"__main__\":\n" +
+                "    nums = " + arrayPart + "\n" +
+                "    target = " + integerPart + "\n" +
+                "    print(twoSum(nums, target))";
+    }
 }

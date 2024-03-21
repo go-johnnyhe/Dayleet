@@ -1,0 +1,17 @@
+{
+  "name": "dayleet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/go-johnnyhe/Dayleet.git"
+  },
+  "private": true,
+  "dependencies": {
+    "daisyui": "^4.7.3"
+  }
+}

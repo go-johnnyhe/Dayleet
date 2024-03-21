@@ -43,6 +43,16 @@ public class AuthController {
         this.myJudge0Service = myJudge0Service;
     }
 
+    @GetMapping("/")
+    public String takeMeHome() {
+        return "redirect:/home";
+    }
+
+    @GetMapping("/home")
+    public String showHome() {
+        return "home";
+    }
+
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";

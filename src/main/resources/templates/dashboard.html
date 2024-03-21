@@ -3,38 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/dist/styles.css}">
+    <style>
+        .glow-on-hover {
+            /*width: 100px;*/
+            /*height: 50px;*/
+            border: none;
+            outline: none;
+            color: #fff;
+            background: #111;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 10px;
+            /* margin-top: 10em; */
+        }
+
+        .glow-on-hover:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left:-2px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+        }
+
+        .glow-on-hover:active {
+            color: #000
+        }
+
+        .glow-on-hover:active:after {
+            background: transparent;
+        }
+
+        .glow-on-hover:hover:before {
+            opacity: 1;
+        }
+
+        .glow-on-hover:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #5387B4;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+        }
+
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+    </style>
 </head>
-<body>
-  <h1>Welcome, <span th:text="${username}"></span>!</h1>
-  <p>This is your dashboard content.</p>
-  <br>
-  <label for="file">Progress:</label>
-  <progress id="file" value="32" max="100"> 32% </progress>
-  <br>
-  <h2>Questions</h2>
-  <table>
-      <thead>
-      <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Difficulty</th>
-          <th>Description</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="questionListItem : ${questionList}">
-          <td th:text="${questionListItem.question.name}"></td>
-          <td th:text="${questionListItem.question.category}"></td>
-          <td th:text="${questionListItem.question.difficulty}"></td>
-          <td th:text="${questionListItem.question.description}"></td>
-      </tr>
-      </tbody>
-  </table>
+<body class="bg-gray-100">
+<nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
+    <a href="/home"><h1 class="text-xl font-bold text-stone-950">Dayleet</h1></a>
+    <div>
+        <!-- Show "Log In" link if user is not authenticated -->
+        <a th:if="${not #authorization.expr('isAuthenticated()')}" href="/login" class="py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-full transition duration-300 ease-in-out">
+            Log In
+        </a>
+        <!-- Show "Log Out" link if user is authenticated -->
+        <form th:if="${#authorization.expr('isAuthenticated()')}" th:action="@{/logout}" method="post" class="inline">
+            <button type="submit" class="py-2 px-4 bg-red-500 hover:bg-red-600 rounded-full transition duration-300 ease-in-out">
+                Log Out
+            </button>
+        </form>
+    </div>
+</nav>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-semibold text-gray-800">Welcome, <span th:text="${username}">User</span>!</h1>
 
-  <br>
+    <br>
+    <div class="mb-4 flex flex-col justify-center align-middle">
+        <label class="block pb-2">Progress</label>
+<!--        <progress class="progress progress-primary w-full" value="25" max="100"></progress>-->
 
-  <form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-  </form>
+                    <div class="radial-progress border-2 border-primary" style="--value:25; --size:12rem; --thickness: 1rem;" role="progressbar">25%</div>
+    </div>
+
+<!--    <br>-->
+
+    <div class="bg-white rounded-lg shadow-lg p-6" style="height: 245px">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Your Tasks</h2>
+        <p class="mb-2">5 new problems</p>
+        <p class="mb-2">3 review problems</p>
+        <a th:href="@{/problem/1}"><button class="btn btn-primary w-full glow-on-hover mt-4">Start Grind</button></a>
+    </div>
+
+
+<br>
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="table w-full">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="questionListItem : ${questionList}">
+                <td th:text="${questionListItem.question.name}">Question Name</td>
+                <td th:text="${questionListItem.question.category}">Category</td>
+                <td th:text="${questionListItem.question.difficulty}">Difficulty</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 </body>
 </html>

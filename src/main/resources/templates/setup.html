@@ -3,8 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Setup</title>
+  <link rel="stylesheet" th:href="@{/dist/styles.css}">
+  <style>
+    /* Inline styles for glassmorphism effect */
+    .glassmorphism {
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gray-100">
+<nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
+  <a href="/home"><h1 class="text-xl font-bold text-stone-950">Dayleet</h1></a>
+  <div>
+    <!-- Show "Log In" link if user is not authenticated -->
+    <a th:if="${not #authorization.expr('isAuthenticated()')}" href="/login" class="py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-full transition duration-300 ease-in-out">
+      Log In
+    </a>
+    <!-- Show "Log Out" link if user is authenticated -->
+    <form th:if="${#authorization.expr('isAuthenticated()')}" th:action="@{/logout}" method="post" class="inline">
+      <button type="submit" class="py-2 px-4 bg-red-500 hover:bg-red-600 rounded-full transition duration-300 ease-in-out">
+        Log Out
+      </button>
+    </form>
+  </div>
+</nav>
+<div class="container mx-auto p-4">
   <h1>Setup</h1>
   <form th:action="@{/setup}" method="post">
     <div>
@@ -24,6 +48,7 @@
     </div>
     <button type="submit">Save</button>
   </form>
+</div>
 
   <script>
     const questionSet = document.getElementById("questionSet");

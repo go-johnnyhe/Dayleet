@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Home - Dayleet</title>
+  <link rel="stylesheet" th:href="@{/dist/styles.css}">
+  <style>
+    .glassmorphism {
+      backdrop-filter: blur(5px);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+<nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
+  <a href="/home"><h1 class="text-xl font-bold text-stone-950">Dayleet</h1></a>
+  <div>
+    <!-- Show "Log In" link if user is not authenticated -->
+    <a th:if="${not #authorization.expr('isAuthenticated()')}" href="/login" class="py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-full transition duration-300 ease-in-out">
+      Log In
+    </a>
+    <!-- Show "Log Out" link if user is authenticated -->
+    <form th:if="${#authorization.expr('isAuthenticated()')}" th:action="@{/logout}" method="post" class="inline">
+      <button type="submit" class="py-2 px-4 bg-red-500 hover:bg-red-600 rounded-full transition duration-300 ease-in-out">
+        Log Out
+      </button>
+    </form>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="flex flex-col items-center justify-center min-h-screen">
+  <div class="text-center">
+    <h2 class="text-3xl font-bold text-gray-800">Welcome to your new way of preparing for LeetCode</h2>
+<!--    <p class="text-xl text-gray-600 mt-4">Under Construction</p>-->
+  </div>
+</div>
+</body>
+</html>

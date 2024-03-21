@@ -3,24 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" th:href="@{/dist/styles.css}">
 </head>
-<body>
-    <h1>Login page</h1>
-    <div th:if="${param.error}">
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+    <h1 class="text-gray-800 text-xl mb-6 text-center">Login to your account</h1>
+    <div th:if="${param.error}" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
         <p>Invalid username or password.</p>
     </div>
-    <div th:if="${param.logout}">
-        <p>You have been logged out.</p>
+    <div th:if="${param.logout}" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6">
+        <p>You have been logged out successfully.</p>
     </div>
-    <form th:action="@{/login}" method="post">
-        <label for="username">User name:</label>
-        <input type="text" id="username" name="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
+    <form th:action="@{/login}" method="post" class="space-y-4">
+        <div>
+            <label for="username" class="text-gray-500">User name:</label>
+            <input type="text" id="username" name="username" required class="w-full p-2 border border-gray-300 rounded mt-1">
+        </div>
+        <div>
+            <label for="password" class="text-gray-500">Password:</label>
+            <input type="password" id="password" name="password" required class="w-full p-2 border border-gray-300 rounded mt-1">
+        </div>
+        <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">Login</button>
     </form>
-<p>Don't have an account? <a th:href="@{/register}">Register here</a></p>
+    <p class="mt-4 text-center text-gray-600">Don't have an account? <a th:href="@{/register}" class="text-blue-600 hover:underline">Register here</a></p>
+</div>
 </body>
 </html>
