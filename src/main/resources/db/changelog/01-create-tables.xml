@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create-tables" author="your-name">
+        <createTable tableName="question">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="difficulty" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(1000)"/>
+        </createTable>
+
+        <createTable tableName="coding_lang">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="question_collection">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="question_list">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="question_collection_id" type="INT"/>
+            <column name="question_id" type="INT"/>
+        </createTable>
+
+        <createTable tableName="question_place_holder">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="place_holder" type="VARCHAR(255)"/>
+            <column name="coding_lang_id" type="INT"/>
+            <column name="question_id" type="INT"/>
+        </createTable>
+
+        <createTable tableName="question_test_case">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="test_case" type="VARCHAR(255)"/>
+            <column name="correct_output" type="VARCHAR(255)"/>
+            <column name="question_id" type="INT"/>
+        </createTable>
+
+        <createTable tableName="user">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="completed_setup" type="BOOLEAN"/>
+            <column name="question_set" type="VARCHAR(255)"/>
+            <column name="num_daily_problems" type="INT"/>
+            <column name="completion_date" type="DATE"/>
+            <column name="shuffled_view" type="BOOLEAN"/>
+            <column name="dark_mode" type="BOOLEAN"/>
+            <column name="password" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="submission">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="question_id" type="INT"/>
+            <column name="user_id" type="INT"/>
+            <column name="submission_time" type="DATE"/>
+            <column name="submitted_code" type="TEXT"/>
+            <column name="submission_status" type="VARCHAR(255)"/>
+            <column name="judge0_token" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="user_progress">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="last_review_date" type="DATE"/>
+            <column name="next_review_date" type="DATE"/>
+            <column name="ease_factor" type="DOUBLE"/>
+            <column name="review_interval" type="INT"/>
+            <column name="repetition" type="INT"/>
+            <column name="score" type="INT"/>
+            <column name="user_id" type="INT"/>
+            <column name="question_id" type="INT"/>
+        </createTable>
+
+        <addUniqueConstraint tableName="question" columnNames="name, category, difficulty" constraintName="unique_question"/>
+        <addUniqueConstraint tableName="coding_lang" columnNames="name" constraintName="unique_coding_lang"/>
+        <addUniqueConstraint tableName="question_collection" columnNames="name" constraintName="unique_question_collection"/>
+        <addUniqueConstraint tableName="question_list" columnNames="question_collection_id, question_id" constraintName="unique_coding_list"/>
+        <addUniqueConstraint tableName="question_place_holder" columnNames="place_holder, coding_lang_id, question_id" constraintName="unique_place_holder"/>
+        <addUniqueConstraint tableName="question_test_case" columnNames="test_case, correct_output, question_id" constraintName="unique_test_case"/>
+
+
+
+        <addForeignKeyConstraint baseTableName="question_list" baseColumnNames="question_collection_id" referencedTableName="question_collection" referencedColumnNames="id" constraintName="fk_question_list_question_collection" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="question_list" baseColumnNames="question_id" referencedTableName="question" referencedColumnNames="id" constraintName="fk_question_list_question"/>
+
+        <addForeignKeyConstraint baseTableName="question_place_holder" baseColumnNames="coding_lang_id" referencedTableName="coding_lang" referencedColumnNames="id" constraintName="fk_question_place_holder_coding_lang"/>
+        <addForeignKeyConstraint baseTableName="question_place_holder" baseColumnNames="question_id" referencedTableName="question" referencedColumnNames="id" constraintName="fk_question_place_holder_question"/>
+
+        <addForeignKeyConstraint baseTableName="question_test_case" baseColumnNames="question_id" referencedTableName="question" referencedColumnNames="id" constraintName="fk_question_test_case_question"/>
+
+        <addForeignKeyConstraint baseTableName="submission" baseColumnNames="question_id" referencedTableName="question" referencedColumnNames="id" constraintName="fk_submission_question"/>
+        <addForeignKeyConstraint baseTableName="submission" baseColumnNames="user_id" referencedTableName="user" referencedColumnNames="id" constraintName="fk_submission_user"/>
+
+        <addForeignKeyConstraint baseTableName="user_progress" baseColumnNames="user_id" referencedTableName="user" referencedColumnNames="id" constraintName="fk_user_progress_user"/>
+        <addForeignKeyConstraint baseTableName="user_progress" baseColumnNames="question_id" referencedTableName="question" referencedColumnNames="id" constraintName="fk_user_progress_question"/>
+    </changeSet>
+</databaseChangeLog>

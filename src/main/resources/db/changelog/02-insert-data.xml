@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-data" author="your-name">
+        <insert tableName="question">
+            <column name="name" value="Two Sum"/>
+            <column name="category" value="Arrays &amp; Hashing"/>
+            <column name="difficulty" value="Easy"/>
+            <column name="description" value="Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target."/>
+        </insert>
+        <!-- Insert more questions -->
+
+        <insert tableName="coding_lang">
+            <column name="name" value="Java"/>
+        </insert>
+        <insert tableName="coding_lang">
+            <column name="name" value="Python"/>
+        </insert>
+        <!-- Insert more coding languages -->
+
+        <insert tableName="question_collection">
+            <column name="name" value="Blind75"/>
+        </insert>
+        <!-- Insert more question collections -->
+
+        <!-- Insert data into other tables -->
+
+    </changeSet>
+</databaseChangeLog>

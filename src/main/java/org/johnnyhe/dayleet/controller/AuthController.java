@@ -140,10 +140,10 @@ public class AuthController {
     public ResponseEntity<?> executeCode(@RequestBody CodeSubmissionRequest request) throws JsonProcessingException {
         String code = request.getCode();
         int languageId = request.getLanguageId();
+        Long questionId = request.getQuestionId();
 
         System.out.println("Received CodeSubmissionRequest: " + request);
 
-        Long questionId = request.getQuestionId();
         if (questionId == null) {
             return ResponseEntity.badRequest().body("Question ID is required.");
         }
@@ -157,6 +157,8 @@ public class AuthController {
         List<String> expectedOutputs = problemService.getExpectedOutputs((long) myQuestion.getId());
 
         List<Boolean> results = new ArrayList<>();
+        List<Map<String, Object>> testCaseResults = new ArrayList<>();
+
 
         for (int i = 0; i < testCases.size(); i++) {
             String testCase = testCases.get(i);
@@ -171,21 +173,6 @@ public class AuthController {
                 isCorrect = actualOutput.trim().equals(expectedOutput.trim());
             }
             results.add(isCorrect);
-        }
-
-        boolean allPassed = results.stream().allMatch(result -> result);
-
-//exp
-        List<Map<String, Object>> testCaseResults = new ArrayList<>();
-
-        for (int i = 0; i < testCases.size(); i++) {
-            String testCase = testCases.get(i);
-            String expectedOutput = expectedOutputs.get(i);
-
-            String actualOutput = myJudge0Service.executeCode(code, languageId, testCase);
-
-            boolean isCorrect = actualOutput != null && actualOutput.trim().equals(expectedOutput.trim());
-            results.add(isCorrect);
 
             Map<String, Object> testCaseResult = new HashMap<>();
             testCaseResult.put("testCase", testCase);
@@ -195,7 +182,8 @@ public class AuthController {
             testCaseResults.add(testCaseResult);
         }
 
-//        exp end
+        boolean allPassed = results.stream().allMatch(result -> result);
+
 
         long passedTests = results.stream().filter(Boolean::booleanValue).count();
 
