@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" th:href="@{/editor.css}">
     <title>Editor</title>
     <link rel="stylesheet" th:href="@{/dist/styles.css}">
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100" hx-headers='js:{"X-CSRF-TOKEN": token}'>
 <nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
     <a href="/dashboard"><h1 class="text-xl font-bold text-stone-950">Dayleet</h1></a>
     <div>
@@ -33,15 +34,26 @@
     </div>
     <div id="editor" class="mb-6" style="height: 500px;"></div>
     <div class="mb-6">
-        <button onclick="executeCode()" class="btn btn-primary w-full">Run</button>
+<!--        <button onclick="executeCode()" class="btn btn-primary w-full">Run</button>-->
+        <button hx-post="/execute2"
+                hx-vals='javascript:{"code": editor.getValue(), "languageId": "71", "problemId": problemId}'
+                hx-target="#testCaseResults"
+                hx-include="#testCaseResults"
+                hx-swap="outerHTML"
+                hx-trigger="click"
+                id="run2Button"
+                class="btn btn-primary w-full">Run</button>
+<!--        <button onclick="executeCode2()" class="btn btn-primary w-full">Run2!</button>-->
     </div>
-    <div class="mb-6 bg-gray-200 p-4 rounded">
-        <pre id="output" class="whitespace-pre-wrap overflow-auto max-h-60"></pre>
-    </div>
-    <div id="testCaseResults" class="bg-gray-100 p-4 rounded overflow-auto max-h-60"></div>
+<!--    <div class="mb-6 bg-gray-200 p-4 rounded">-->
+<!--        <pre id="output" class="whitespace-pre-wrap overflow-auto max-h-60"></pre>-->
+<!--    </div>-->
+    <div id="testCaseResults" class="bg-gray-100 p-4 rounded shadow-md max-h-96 overflow-auto"></div>
 </div>
 
 <script th:inline="javascript">
+    const token = /*[[${_csrf.token}]]*/ "token";
+
     let editorLang = "python"
     let editor = ace.edit("editor");
     editor.setTheme("ace/theme/monokai");
@@ -49,116 +61,6 @@
 
     let problemId = [[${problem.id}]]
 
-    function executeCode() {
-
-        // const beforeInput = document.getElementById("input-code");
-        // const input = beforeInput.value;
-        let code = editor.getValue();
-        // let output = document.getElementById("output");
-        console.log("this is the result of code: let's see if it's everything inputted:", code);
-        console.log('Problem ID:', problemId);
-        console.log(typeof "1");
-
-
-        fetch('/execute', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
-
-            },
-            body: JSON.stringify({
-                questionId: problemId,
-                code: code,
-                languageId: 71
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-                let resultMessage = "Result: ";
-                if (data.allPassed) {
-                    resultMessage += "All test cases passed!";
-                } else {
-                    resultMessage += "Some test cases failed. ";
-                    resultMessage += "Passed " + data.passedTests + " out of " + data.totalTests + ".";
-                    if (data.details) {
-                        resultMessage += " Failed cases: " + data.details.join(", ");
-                    }
-                }
-
-                let testCaseResultsHtml = "";
-                if (data.testCaseResults) {
-                    data.testCaseResults.forEach((result, index) => {
-                        testCaseResultsHtml += `<div>
-                    <h4>Test Case ${index + 1}</h4>
-                    <p>Test Case: ${result.testCase}</p>
-                    <p>Expected Output: ${result.expectedOutput}</p>
-                    <p>Actual Output: ${result.actualOutput}</p>
-                    <p>Result: ${result.isCorrect ? 'Passed' : 'Failed'}</p>
-                </div>`;
-                    });
-                }
-
-                document.getElementById("output").textContent = resultMessage;
-                document.getElementById("testCaseResults").innerHTML = testCaseResultsHtml;
-            })
-            .catch((err) => console.log("you have an error on the js frontend fetch",err))
-
-
-        // const data =  {
-        //     sourceCode: input,
-        //     languageId: 71
-        // }
-
-        // let token = '';
-        //
-        // const apiURLPostSubmission =  "https://judge0-ce.p.rapidapi.com/submissions"
-        // console.log("here's what you inputted haha:", data.sourceCode);
-        // fetch(apiURLPostSubmission, {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
-        //     },
-        //     body: JSON.stringify({
-        //         'source_code': data.sourceCode,
-        //         'language_id': 71,
-        //     }),
-        //     }).then(res => res.json())
-        //     .then(data => {
-        //         console.log("Yo you did it again", data)
-        //         token = data.token;
-        //         console.log("Here's token,", token)
-        //         function pollForResult() {
-        //             const apiURLGetSubmissionResult = `https://judge0-ce.p.rapidapi.com/submissions/${token}`;
-        //             fetch(apiURLGetSubmissionResult, {
-        //                 method: "GET",
-        //                 headers: {
-        //                     "Content-Type": "application/json",
-        //                     'x-rapidapi-key': 'a165254e0emshef4c605c96ac547p11debfjsn25f60946c55d',
-        //                 }
-        //             }).then(res => res.json())
-        //                 .then(data => {
-        //                     console.log(data);
-        //                     if (data.status && data.status.id <= 2) { // Status IDs 1 and 2 are "In Queue" and "Processing"
-        //                         console.log("Result is still in queue/processing, checking again...");
-        //                         setTimeout(pollForResult, 1000); // Check again after 2 seconds
-        //                     } else {
-        //                         console.log("Execution result: ", data);
-        //                         output.textContent = data.stdout || "no output";
-        //                     }
-        //                 }).catch((err) => {
-        //                 console.log("I had trouble getting the submission result, rip. Details here: ", err);
-        //             });
-        //         }
-        //
-        //         pollForResult();
-        //     })
-        //     .catch((err) => {
-        //         console.log("couldn't successfully upload the submission",err);
-        //     });
-
-    }
 </script>
 </body>
 </html>

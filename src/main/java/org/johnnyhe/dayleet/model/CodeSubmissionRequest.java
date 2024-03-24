@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CodeSubmissionRequest {
-    private Long questionId;
+    private int questionId;
     private String code;
     private Integer languageId;
 

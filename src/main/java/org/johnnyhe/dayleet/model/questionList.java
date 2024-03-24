@@ -13,11 +13,11 @@ public class questionList {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "questionCollection_id", referencedColumnName = "id")
+    @JoinColumn(name = "question_collection_id", referencedColumnName = "id")
     private questionCollection questionCollection;
 
     @ManyToOne
-    @JoinColumn(name = "question", referencedColumnName = "id")
+    @JoinColumn(name = "question_id", referencedColumnName = "id")
     private question question;
 
 }

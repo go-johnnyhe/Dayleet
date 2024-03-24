@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-testcases" author="Johnny">
+        <!--question_test_case (only for python now)-->
+        <!-- Two Sum -->
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="test_case" value="[2, 7, 11, 15], 9"/>
+            <column name="correct_output" value="[0, 1]" />
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="test_case" value="[3, 2, 4], 6"/>
+            <column name="correct_output" value="[1, 2]" />
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="test_case" value="[3, 3], 6"/>
+            <column name="correct_output" value="[0, 1]" />
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="test_case" value="[1, 2, 3, 4, 5], 10"/>
+            <column name="correct_output" value="[]" />
+        </insert>
+        <!-- Valid Anagram -->
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;listen&quot;, &quot;silent&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;hello&quot;, &quot;world&quot;"/>
+            <column name="correct_output" value="False"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;debit card&quot;, &quot;bad credit&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;astronomer&quot;, &quot;moon starer&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;a gentleman&quot;, &quot;elegant man&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;funeral&quot;, &quot;real fun&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;the eyes&quot;, &quot;they see&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="test_case" value="&quot;eleven plus two&quot;, &quot;twelve plus one&quot;"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <!--   Contains Duplicate   -->
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="test_case" value="[1, 2, 3, 1]"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="test_case" value="[1, 2, 3, 4]"/>
+            <column name="correct_output" value="False"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="test_case" value="[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]"/>
+            <column name="correct_output" value="True"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="test_case" value="[]"/>
+            <column name="correct_output" value="False"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="test_case" value="[1]"/>
+            <column name="correct_output" value="False"/>
+        </insert>
+        <!--   Merge Two Lists   -->
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="test_case" value="[1, 2, 3], [2, 5, 6]"/>
+            <column name="correct_output" value="[1, 2, 2, 3, 5, 6]"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="test_case" value="[1], [2]"/>
+            <column name="correct_output" value="[1, 2]"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="test_case" value="[], []"/>
+            <column name="correct_output" value="[]"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="test_case" value="[1, 3, 5, 7, 9], [2, 4, 6, 8]"/>
+            <column name="correct_output" value="[1, 2, 3, 4, 5, 6, 7, 8, 9]"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="test_case" value="[1, 2, 3], []"/>
+            <column name="correct_output" value="[1, 2, 3]"/>
+        </insert>
+        <insert tableName="question_test_case">
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="test_case" value="[], [1, 2, 3]"/>
+            <column name="correct_output" value="[1, 2, 3]"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

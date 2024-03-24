@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-print-statements" author="Johnny">
+        <!--test_case_print_statement (only python)-->
+        <validCheckSum>9:6b7b7fcda49a8f097129fc09807aae01</validCheckSum>
+
+        <!-- Print statements for language_id 1 (Python) and question_id for 'Two Sum' -->
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="print_statement" value="print(twoSum([2, 7, 11, 15], 9))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="print_statement" value="print(twoSum([3, 2, 4], 6))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="print_statement" value="print(twoSum([3, 3], 6))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+            <column name="print_statement" value="print(twoSum([1, 2, 3, 4, 5], 10))"/>
+        </insert>
+        <!-- Print statements for language_id 1 (Python) and question_id for 'Valid Anagram' -->
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;listen&quot;, &quot;silent&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;hello&quot;, &quot;world&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;debit card&quot;, &quot;bad credit&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;astronomer&quot;, &quot;moon starer&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;a gentleman&quot;, &quot;elegant man&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;funeral&quot;, &quot;real fun&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;the eyes&quot;, &quot;they see&quot;))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+            <column name="print_statement" value="print(isAnagram(&quot;eleven plus two&quot;, &quot;twelve plus one&quot;))"/>
+        </insert>
+        <!-- Print statements for language_id 1 (Python) and question_id for 'Contains Duplicate' -->
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="print_statement" value="print(containsDuplicate([1, 2, 3, 1]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="print_statement" value="print(containsDuplicate([1, 2, 3, 4]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="print_statement" value="print(containsDuplicate([1, 1, 1, 3, 3, 4, 3, 2, 4, 2]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="print_statement" value="print(containsDuplicate([]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+            <column name="print_statement" value="print(containsDuplicate([1]))"/>
+        </insert>
+        <!-- Print statements for language_id 1 (Python) and question_id for 'Merge Two Sorted Lists' -->
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="print_statement" value="print(mergeTwoLists([1, 2, 3], [2, 5, 6]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="print_statement" value="print(mergeTwoLists([1], [2]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="print_statement" value="print(mergeTwoLists([], []))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="print_statement" value="print(mergeTwoLists([1, 3, 5, 7, 9], [2, 4, 6, 8]))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="print_statement" value="print(mergeTwoLists([1, 2, 3], []))"/>
+        </insert>
+        <insert tableName="test_case_print_statement">
+            <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+            <column name="print_statement" value="print(mergeTwoLists([], [1, 2, 3]))"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="insert-placeholders" author="Johnny">
+        <!--question_place_holder (4, only python's questions now) -->
+        <insert tableName="question_place_holder">
+            <column name="place_holder">
+                <![CDATA[
+                from typing import List
+
+                def twoSum(self, nums: List[int], target: int) -> List[int]:
+                ]]>
+            </column>
+            <column name="coding_lang_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Two Sum')"/>
+        </insert>
+        <insert tableName="question_place_holder">
+            <column name="place_holder">
+                <![CDATA[
+                def isAnagram(s: str, t: str) -> bool:
+                ]]>
+            </column>
+            <column name="coding_lang_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Valid Anagram')"/>
+        </insert>
+        <insert tableName="question_place_holder">
+            <column name="place_holder">
+                <![CDATA[
+                def containsDuplicate(nums):
+                ]]>
+            </column>
+            <column name="coding_lang_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Contains Duplicate')"/>
+        </insert>
+        <insert tableName="question_place_holder">
+            <column name="place_holder">
+                <![CDATA[
+                class ListNode:
+                    def __init__(self, val=0, next=None):
+                        self.val = val
+                        self.next = next
+
+                def mergeTwoLists(self, list1, list2):
+                ]]>
+            </column>
+            <column name="coding_lang_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
+            <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

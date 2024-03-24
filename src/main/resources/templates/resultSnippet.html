@@ -1,0 +1,25 @@
+<div id="testCaseResults" class="bg-gray-100 p-4 rounded shadow-md h-96 overflow-auto">
+    <h3 class="text-xl font-bold mb-4">Test Case Results:</h3>
+    <div th:each="testCaseResult : ${result.testCaseResults}" class="mb-6">
+        <div class="bg-white shadow-md rounded-lg p-4">
+            <h4 class="text-lg font-semibold mb-2" th:text="'Test Case ' + ${testCaseResult.testCaseId} + ':'"></h4>
+            <div class="mb-2">
+                <span class="font-semibold">Test Case:</span>
+                <span th:text="${testCaseResult.testCase}"></span>
+            </div>
+            <div class="mb-2">
+                <span class="font-semibold">Actual Output:</span>
+                <pre class="mt-1 p-2 bg-gray-200 rounded" th:text="${testCaseResult.actualOutput}"></pre>
+            </div>
+            <div class="mb-2">
+                <span class="font-semibold">Expected Output:</span>
+                <pre class="mt-1 p-2 bg-gray-200 rounded" th:text="${testCaseResult.expectedOutput}"></pre>
+            </div>
+            <div>
+                <span class="font-semibold">Result:</span>
+                <span th:class="${testCaseResult.correct} ? 'text-green-500' : 'text-red-500'"
+                      th:text="${testCaseResult.correct} ? 'Passed' : 'Failed'"></span>
+            </div>
+        </div>
+    </div>
+</div>

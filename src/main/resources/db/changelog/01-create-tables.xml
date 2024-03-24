@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-tables" author="your-name">
+    <changeSet id="create-tables" author="Johnny">
         <createTable tableName="question">
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -14,6 +14,7 @@
             <column name="category" type="VARCHAR(255)"/>
             <column name="difficulty" type="VARCHAR(255)"/>
             <column name="description" type="VARCHAR(1000)"/>
+            <column name="method_name" type="VARCHAR(500)"/>
         </createTable>
 
         <createTable tableName="coding_lang">
@@ -96,6 +97,15 @@
             <column name="question_id" type="INT"/>
         </createTable>
 
+        <createTable tableName="test_case_print_statement">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="language_id" type="INT"/>
+            <column name="print_statement" type="VARCHAR(500)"/>
+            <column name="question_id" type="INT"/>
+        </createTable>
+
         <addUniqueConstraint tableName="question" columnNames="name, category, difficulty" constraintName="unique_question"/>
         <addUniqueConstraint tableName="coding_lang" columnNames="name" constraintName="unique_coding_lang"/>
         <addUniqueConstraint tableName="question_collection" columnNames="name" constraintName="unique_question_collection"/>
@@ -103,7 +113,12 @@
         <addUniqueConstraint tableName="question_place_holder" columnNames="place_holder, coding_lang_id, question_id" constraintName="unique_place_holder"/>
         <addUniqueConstraint tableName="question_test_case" columnNames="test_case, correct_output, question_id" constraintName="unique_test_case"/>
 
-
+        <addForeignKeyConstraint baseTableName="test_case_print_statement" baseColumnNames="language_id"
+                                 referencedTableName="coding_lang" referencedColumnNames="id"
+                                 constraintName="fk_test_case_print_statement_language"/>
+        <addForeignKeyConstraint baseTableName="test_case_print_statement" baseColumnNames="question_id"
+                                 referencedTableName="question" referencedColumnNames="id"
+                                 constraintName="fk_test_case_print_statement_question"/>
 
         <addForeignKeyConstraint baseTableName="question_list" baseColumnNames="question_collection_id" referencedTableName="question_collection" referencedColumnNames="id" constraintName="fk_question_list_question_collection" onDelete="CASCADE"/>
         <addForeignKeyConstraint baseTableName="question_list" baseColumnNames="question_id" referencedTableName="question" referencedColumnNames="id" constraintName="fk_question_list_question"/>
