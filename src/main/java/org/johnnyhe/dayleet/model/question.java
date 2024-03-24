@@ -25,7 +25,7 @@ public class question {
     private Difficulty difficulty;
     @Column(length = 1000)
     private String description;
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER)
     private List<questionTestCase> questionTestCases;
 
     public question(String name, String category, Difficulty difficulty, String description) {

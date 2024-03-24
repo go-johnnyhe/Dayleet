@@ -137,28 +137,39 @@ public class Judge0Service2 {
                         result.setSuccessMsg(stdout);
                         System.out.println(stdout);
 
+
                         String[] testCaseOutputs = stdout.split("\n");
+
                         for (int i = 0; i < testCaseOutputs.length; i++) {
                             String testCaseOutput = testCaseOutputs[i].trim();
+//                            System.out.println("this test case output is: " + testCaseOutput);
                             Long testCaseId = (long) (i + 1);
-
+                            System.out.println("this test case id is: " + testCaseId);
                             TestCaseResult testCaseResult = new TestCaseResult();
                             testCaseResult.setTestCaseId(testCaseId);
                             testCaseResult.setActualOutput(testCaseOutput);
 
                             // Retrieve the expected output for the current test case
                             TestCasePrintStatement printStatement = myTestCasePrintStatementRepo.findByQuestionAndLanguageAndId(question, language, testCaseId);
+                            System.out.println("here is my print statement:");
+                            System.out.println(printStatement);
+
                             if (printStatement != null) {
                                 String testCase = printStatement.getPrintStatement();
                                 questionTestCase questionTestCase = printStatement.getQuestion().getQuestionTestCases().stream()
                                         .filter(tc -> tc.getId() == testCaseId)
                                         .findFirst()
                                         .orElse(null);
+                                System.out.println("questionTestCase: " + questionTestCase);
+
                                 if (questionTestCase != null) {
+                                    System.out.println("Found questionTestCase for testCaseId: " + testCaseId);
                                     String expectedOutput = questionTestCase.getCorrectOutput();
                                     testCaseResult.setTestCase(testCase);
                                     testCaseResult.setExpectedOutput(expectedOutput);
                                     testCaseResult.setCorrect(testCaseOutput.equals(expectedOutput));
+                                } else {
+                                    System.out.println("No questionTestCase found for testCaseId: " + testCaseId);
                                 }
                             }
 

@@ -18,6 +18,7 @@ public class TestCasePrintStatement {
     @JoinColumn(name = "language_id", referencedColumnName = "id")
     private codingLang language;
 
+
     @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private question question;
@@ -25,6 +26,15 @@ public class TestCasePrintStatement {
     @Column(name = "print_statement")
     private String printStatement;
 
-    // Constructors, Getters, and Setters
+    @Override
+    public String toString() {
+        return "TestCasePrintStatement{" +
+                "id=" + id +
+                ", language=" + language +
+                ", question=" + question +
+                ", printStatement='" + printStatement + '\'' +
+                '}';
+    }
+
 }
 

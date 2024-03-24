@@ -139,8 +139,8 @@ public class AuthController {
         return "editor";
     }
 
-    @PostMapping("/execute2")
-    public String executeCode2(@RequestParam("code") String code,
+    @PostMapping("/execute")
+    public String executeCode(@RequestParam("code") String code,
                                @RequestParam("languageId") int languageId,
                                @RequestParam("problemId") int problemId,
                                Model model) {
@@ -157,75 +157,4 @@ public class AuthController {
         return "resultSnippet";
     }
 
-//    @PostMapping("/execute")
-//    public ResponseEntity<?> executeCode(@RequestBody CodeSubmissionRequest request) throws JsonProcessingException {
-//        String code = request.getCode();
-//        int languageId = request.getLanguageId();
-//        int questionId = request.getQuestionId();
-//
-//        System.out.println("Received CodeSubmissionRequest: " + request);
-//
-//        if (questionId == null) {
-//            return ResponseEntity.badRequest().body("Question ID is required.");
-//        }
-//
-//        question myQuestion = problemService.findQuestionById(request.getQuestionId());
-//        if (myQuestion == null) {
-//            return ResponseEntity.badRequest().body("Invalid question id");
-//        }
-//
-//        List<String> testCases = problemService.getTestCases((long) myQuestion.getId());
-//        List<String> expectedOutputs = problemService.getExpectedOutputs((long) myQuestion.getId());
-//
-//        List<Boolean> results = new ArrayList<>();
-//        List<Map<String, Object>> testCaseResults = new ArrayList<>();
-//
-//
-//        for (int i = 0; i < testCases.size(); i++) {
-//            String testCase = testCases.get(i);
-//            String expectedOutput = expectedOutputs.get(i);
-//
-//            String actualOutput = myJudge0Service.executeCode(code, languageId, testCase);
-//
-//            boolean isCorrect;
-//            if (actualOutput == null) {
-//                isCorrect = false; // Consider null output as incorrect
-//            } else {
-//                isCorrect = actualOutput.trim().equals(expectedOutput.trim());
-//            }
-//            results.add(isCorrect);
-//
-//            Map<String, Object> testCaseResult = new HashMap<>();
-//            testCaseResult.put("testCase", testCase);
-//            testCaseResult.put("expectedOutput", expectedOutput);
-//            testCaseResult.put("actualOutput", actualOutput);
-//            testCaseResult.put("isCorrect", isCorrect);
-//            testCaseResults.add(testCaseResult);
-//        }
-//
-//        boolean allPassed = results.stream().allMatch(result -> result);
-//
-//
-//        long passedTests = results.stream().filter(Boolean::booleanValue).count();
-//
-//        // Prepare detailed response
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("allPassed", allPassed);
-//        response.put("totalTests", testCases.size());
-//        response.put("passedTests", passedTests);
-//
-//        List<String> detailMessages = new ArrayList<>();
-//        for (int i = 0; i < results.size(); i++) {
-//            if (!results.get(i)) {
-//                detailMessages.add(String.format("Test Case %d Failed", i + 1));
-//            }
-//        }
-//
-//        if (!detailMessages.isEmpty()) {
-//            response.put("details", detailMessages);
-//        }
-//
-//        response.put("testCaseResults", testCaseResults);
-//        return ResponseEntity.ok(response);
-//    }
 }

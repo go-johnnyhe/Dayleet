@@ -35,7 +35,7 @@
     <div id="editor" class="mb-6" style="height: 500px;"></div>
     <div class="mb-6">
 <!--        <button onclick="executeCode()" class="btn btn-primary w-full">Run</button>-->
-        <button hx-post="/execute2"
+        <button hx-post="/execute"
                 hx-vals='javascript:{"code": editor.getValue(), "languageId": "71", "problemId": problemId}'
                 hx-target="#testCaseResults"
                 hx-include="#testCaseResults"
