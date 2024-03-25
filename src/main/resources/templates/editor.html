@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/editor.css}">
     <title>Editor</title>
     <link rel="stylesheet" th:href="@{/dist/styles.css}">
+    <link rel="icon" type="image/png" href="/icons8-smile-48.png">
 </head>
 <body class="bg-gray-100" hx-headers='js:{"X-CSRF-TOKEN": token}'>
 <nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
@@ -50,16 +51,18 @@
 <!--    </div>-->
     <div id="testCaseResults" class="bg-gray-100 p-4 rounded shadow-md max-h-96 overflow-auto"></div>
 </div>
-
 <script th:inline="javascript">
     const token = /*[[${_csrf.token}]]*/ "token";
 
     let editorLang = "python"
     let editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
+    editor.setTheme("ace/theme/dracula");
     editor.session.setMode(`ace/mode/${editorLang}`);
 
     let problemId = [[${problem.id}]]
+    let placeholder = /*[[${placeholder}]]*/ "";
+    editor.setValue(placeholder);
+    editor.clearSelection();
 
 </script>
 </body>

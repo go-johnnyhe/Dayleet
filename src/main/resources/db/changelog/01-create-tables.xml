@@ -6,6 +6,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create-tables" author="Johnny">
+        <validCheckSum>9:fe6f324aff25eb3aa0f13b0732eb7f70</validCheckSum>
         <createTable tableName="question">
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -43,7 +44,7 @@
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="place_holder" type="VARCHAR(255)"/>
+            <column name="place_holder" type="VARCHAR(1000)"/>
             <column name="coding_lang_id" type="INT"/>
             <column name="question_id" type="INT"/>
         </createTable>
@@ -110,7 +111,7 @@
         <addUniqueConstraint tableName="coding_lang" columnNames="name" constraintName="unique_coding_lang"/>
         <addUniqueConstraint tableName="question_collection" columnNames="name" constraintName="unique_question_collection"/>
         <addUniqueConstraint tableName="question_list" columnNames="question_collection_id, question_id" constraintName="unique_coding_list"/>
-        <addUniqueConstraint tableName="question_place_holder" columnNames="place_holder, coding_lang_id, question_id" constraintName="unique_place_holder"/>
+        <addUniqueConstraint tableName="question_place_holder" columnNames="coding_lang_id, question_id" constraintName="unique_place_holder"/>
         <addUniqueConstraint tableName="question_test_case" columnNames="test_case, correct_output, question_id" constraintName="unique_test_case"/>
 
         <addForeignKeyConstraint baseTableName="test_case_print_statement" baseColumnNames="language_id"

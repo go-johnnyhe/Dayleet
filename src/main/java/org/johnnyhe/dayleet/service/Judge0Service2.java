@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -60,9 +61,23 @@ public class Judge0Service2 {
             fullCode.append("\n");
         }
 
+
+
         printStatements.forEach(printStatement -> {
             fullCode.append(printStatement.getPrintStatement()).append("\n");
         });
+//        printStatements.forEach(printStatement -> {
+//            if (question.getName().equals("Merge Two Sorted Lists")) {
+//                // For "Merge Two Sorted Lists" question, add newline and indentation for each line
+//                String[] lines = printStatement.getPrintStatement().split("\n");
+//                for (String line : lines) {
+//                    fullCode.append("\n    ").append(line.trim());
+//                }
+//            } else {
+//                // For other questions, append the print statement as-is
+//                fullCode.append("\n").append(printStatement.getPrintStatement());
+//            }
+//        });
 
         System.out.println("Here is the final code:");
         System.out.println(fullCode);
@@ -138,21 +153,41 @@ public class Judge0Service2 {
                         System.out.println(stdout);
 
 
-                        String[] testCaseOutputs = stdout.split("\n");
+                        String[] actualOutputs = stdout.split("\n");
+                        System.out.println("test case outputs" + Arrays.toString(actualOutputs));
+                        System.out.println("Before going in for loop!");
+                        List<TestCasePrintStatement> printStatements = myTestCasePrintStatementRepo.findByQuestionAndLanguage(question, language);
+                        System.out.println("Print statements: " + printStatements);
 
-                        for (int i = 0; i < testCaseOutputs.length; i++) {
-                            String testCaseOutput = testCaseOutputs[i].trim();
+                        for (int i = 0; i < actualOutputs.length; i++) {
+                            String actualOutput = actualOutputs[i].trim();
 //                            System.out.println("this test case output is: " + testCaseOutput);
-                            Long testCaseId = (long) (i + 1);
+                            long testCaseId;
+                            if (question.getId() == 3) {
+                                testCaseId = i + 13;
+                            } else if (question.getId() == 2) {
+                                testCaseId = i + 5;
+                            } else if (question.getId() == 4) {
+                                testCaseId = i + 18;
+                            }
+                            else {
+                                testCaseId = (i + 1);
+                            }
                             System.out.println("this test case id is: " + testCaseId);
-                            TestCaseResult testCaseResult = new TestCaseResult();
-                            testCaseResult.setTestCaseId(testCaseId);
-                            testCaseResult.setActualOutput(testCaseOutput);
+                            System.out.println("this actual output is:" + actualOutput);
+                            TestCaseResult displayResult = new TestCaseResult();
+                            displayResult.setTestCaseId(testCaseId);
+                            displayResult.setActualOutput(actualOutput);
+                            System.out.println("Question is: " + question.getName());
+                            System.out.println("Language is: " + language);
 
-                            // Retrieve the expected output for the current test case
-                            TestCasePrintStatement printStatement = myTestCasePrintStatementRepo.findByQuestionAndLanguageAndId(question, language, testCaseId);
-                            System.out.println("here is my print statement:");
-                            System.out.println(printStatement);
+                            // Find the corresponding TestCasePrintStatement for the current test case ID
+                            TestCasePrintStatement printStatement = printStatements.stream()
+                                    .filter(ps -> ps.getId().equals(testCaseId))
+                                    .findFirst()
+                                    .orElse(null);
+                            System.out.println("Corresponding print statement is: " + printStatement);
+
 
                             if (printStatement != null) {
                                 String testCase = printStatement.getPrintStatement();
@@ -165,15 +200,15 @@ public class Judge0Service2 {
                                 if (questionTestCase != null) {
                                     System.out.println("Found questionTestCase for testCaseId: " + testCaseId);
                                     String expectedOutput = questionTestCase.getCorrectOutput();
-                                    testCaseResult.setTestCase(testCase);
-                                    testCaseResult.setExpectedOutput(expectedOutput);
-                                    testCaseResult.setCorrect(testCaseOutput.equals(expectedOutput));
+                                    displayResult.setTestCase(testCase);
+                                    displayResult.setExpectedOutput(expectedOutput);
+                                    displayResult.setCorrect(actualOutput.equals(expectedOutput));
                                 } else {
                                     System.out.println("No questionTestCase found for testCaseId: " + testCaseId);
                                 }
                             }
 
-                            result.addTestCaseResult(testCaseResult);
+                            result.addTestCaseResult(displayResult);
                         }
                     }
                 }

@@ -157,4 +157,26 @@ public class AuthController {
         return "resultSnippet";
     }
 
+    @PostMapping("/submit-rating")
+    public String submitRating(@RequestParam("rating") int rating,
+                               @RequestParam("problemId") int problemId,
+                               Principal principal) {
+        String username = principal.getName();
+        user myUser = myUserRepo.findByUsername(username);
+        question problem = myQuestionRepo.findById((long) problemId).orElse(null);
+
+        if (myUser != null && problem != null) {
+            userProgress progress = new userProgress();
+            progress.setUser(myUser);
+            progress.setQuestion(problem);
+            progress.setScore(rating);
+            // TODO: Set other properties of userProgress as needed
+
+            // Save the user progress
+            // TODO: Implement the userProgressRepo and save the progress
+        }
+
+        return "redirect:/dashboard";
+    }
+
 }

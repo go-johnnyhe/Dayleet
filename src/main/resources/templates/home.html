@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <title>Home - Dayleet</title>
   <link rel="stylesheet" th:href="@{/dist/styles.css}">
+  <link rel="icon" type="image/png" href="/icons8-smile-48.png">
   <style>
     .glassmorphism {
-      backdrop-filter: blur(5px);
-      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     }
   </style>
 </head>
 <body class="bg-gray-100">
 <nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
-  <a href="/dashboard"><h1 class="text-xl font-bold text-stone-950">Dayleet</h1></a>
+  <a href="/home"><h1 class="text-xl font-bold text-stone-950">Dayleet</h1></a>
   <div>
     <!-- Show "Log In" link if user is not authenticated -->
     <a th:if="${not #authorization.expr('isAuthenticated()')}" href="/login" class="py-2 px-4 bg-blue-500 hover:bg-blue-600 rounded-full transition duration-300 ease-in-out">

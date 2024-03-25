@@ -16,7 +16,7 @@
                 <pre class="mt-1 p-2 bg-gray-200 rounded" th:text="${testCaseResult.expectedOutput}"></pre>
             </div>
             <div>
-                <span class="font-semibold">Result:</span>
+                <span class="font-bold">Result:</span>
                 <span th:class="${testCaseResult.correct} ? 'text-green-500' : 'text-red-500'"
                       th:text="${testCaseResult.correct} ? 'Passed' : 'Failed'"></span>
             </div>

@@ -7,7 +7,7 @@
 
     <changeSet id="insert-print-statements" author="Johnny">
         <!--test_case_print_statement (only python)-->
-        <validCheckSum>9:6b7b7fcda49a8f097129fc09807aae01</validCheckSum>
+        <validCheckSum>9:df10ba321463fca03f298e64acbbf590</validCheckSum>
 
         <!-- Print statements for language_id 1 (Python) and question_id for 'Two Sum' -->
         <insert tableName="test_case_print_statement">
@@ -101,32 +101,83 @@
         <insert tableName="test_case_print_statement">
             <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
             <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
-            <column name="print_statement" value="print(mergeTwoLists([1, 2, 3], [2, 5, 6]))"/>
+            <column name="print_statement">
+                <![CDATA[
+l1 = ListNode(1)
+l1.next = ListNode(2)
+l1.next.next = ListNode(3)
+l2 = ListNode(2)
+l2.next = ListNode(5)
+l2.next.next = ListNode(6)
+print(mergeTwoLists(l1, l2))
+        ]]>
+            </column>
         </insert>
         <insert tableName="test_case_print_statement">
             <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
             <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
-            <column name="print_statement" value="print(mergeTwoLists([1], [2]))"/>
+            <column name="print_statement">
+                <![CDATA[
+l1 = ListNode(1)
+l2 = ListNode(2)
+print(mergeTwoLists(l1, l2))
+        ]]>
+            </column>
         </insert>
         <insert tableName="test_case_print_statement">
             <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
             <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
-            <column name="print_statement" value="print(mergeTwoLists([], []))"/>
+            <column name="print_statement">
+                <![CDATA[
+l1 = None
+l2 = None
+print(mergeTwoLists(l1, l2))
+        ]]>
+            </column>
         </insert>
         <insert tableName="test_case_print_statement">
             <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
             <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
-            <column name="print_statement" value="print(mergeTwoLists([1, 3, 5, 7, 9], [2, 4, 6, 8]))"/>
+            <column name="print_statement">
+                <![CDATA[
+l1 = ListNode(1)
+l1.next = ListNode(3)
+l1.next.next = ListNode(5)
+l1.next.next.next = ListNode(7)
+l1.next.next.next.next = ListNode(9)
+l2 = ListNode(2)
+l2.next = ListNode(4)
+l2.next.next = ListNode(6)
+l2.next.next.next = ListNode(8)
+print(mergeTwoLists(l1, l2))
+        ]]>
+            </column>
         </insert>
         <insert tableName="test_case_print_statement">
             <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
             <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
-            <column name="print_statement" value="print(mergeTwoLists([1, 2, 3], []))"/>
+            <column name="print_statement">
+                <![CDATA[
+l1 = ListNode(1)
+l1.next = ListNode(2)
+l1.next.next = ListNode(3)
+l2 = None
+print(mergeTwoLists(l1, l2))
+        ]]>
+            </column>
         </insert>
         <insert tableName="test_case_print_statement">
             <column name="language_id" valueComputed="(SELECT id FROM coding_lang WHERE name = 'Python')"/>
             <column name="question_id" valueComputed="(SELECT id FROM question WHERE name = 'Merge Two Sorted Lists')"/>
-            <column name="print_statement" value="print(mergeTwoLists([], [1, 2, 3]))"/>
+            <column name="print_statement">
+                <![CDATA[
+l1 = None
+l2 = ListNode(1)
+l2.next = ListNode(2)
+l2.next.next = ListNode(3)
+print(mergeTwoLists(l1, l2))
+        ]]>
+            </column>
         </insert>
     </changeSet>
 </databaseChangeLog>

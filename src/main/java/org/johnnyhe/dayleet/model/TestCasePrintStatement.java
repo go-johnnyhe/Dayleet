@@ -31,7 +31,7 @@ public class TestCasePrintStatement {
         return "TestCasePrintStatement{" +
                 "id=" + id +
                 ", language=" + language +
-                ", question=" + question +
+                ", question=" + question.getName() +
                 ", printStatement='" + printStatement + '\'' +
                 '}';
     }

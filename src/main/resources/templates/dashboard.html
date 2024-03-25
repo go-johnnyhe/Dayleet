@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" th:href="@{/dist/styles.css}">
+    <link rel="icon" type="image/png" href="/icons8-smile-48.png">
     <style>
         .glow-on-hover {
             /*width: 100px;*/
@@ -116,7 +117,9 @@
             </thead>
             <tbody>
             <tr th:each="questionListItem : ${questionList}">
-                <td th:text="${questionListItem.question.name}">Question Name</td>
+                <td>
+                    <a th:href="@{/problem/{id}(id=${questionListItem.question.id})}" th:text="${questionListItem.question.name}">Question Name</a>
+                </td>
                 <td th:text="${questionListItem.question.category}">Category</td>
                 <td th:text="${questionListItem.question.difficulty}">Difficulty</td>
             </tr>
