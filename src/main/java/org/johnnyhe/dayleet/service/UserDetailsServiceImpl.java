@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -31,10 +32,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        user myUser = myUserRepo.findByUsername(username);
-        if (myUser == null) {
-            throw new UsernameNotFoundException("No user found :(");
+        Optional<user> myUserOpt = myUserRepo.findByUsername(username);
+        if (!myUserOpt.isPresent()) {
+            throw new UsernameNotFoundException("No user found with username: " + username);
         }
+
+        user myUser = myUserOpt.get();
         return new org.springframework.security.core.userdetails.User(myUser.getUsername(), myUser.getPassword(), Collections.emptyList());
     }
+
 }

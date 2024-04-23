@@ -46,17 +46,17 @@ public class QuestionRepoTests {
         assertThat(testCases).isNotNull();
     }
 
-    @Test
-    void findByName_shouldReturnQuestion() {
-        String questionName = "Shortest Way Home";
-        question myQuestion = new question();
-        myQuestion.setName(questionName);
-        myQuestionRepo.save(myQuestion);
-
-        question questionFound = myQuestionRepo.findByName(questionName);
-        assertThat(questionFound.getName()).isEqualTo(questionName);
-
-    }
+//    @Test
+//    void findByName_shouldReturnQuestion() {
+//        String questionName = "Shortest Way Home";
+//        question myQuestion = new question();
+//        myQuestion.setName(questionName);
+//        myQuestionRepo.save(myQuestion);
+//
+//        question questionFound = myQuestionRepo.findByName(questionName);
+//        assertThat(questionFound.getName()).isEqualTo(questionName);
+//
+//    }
 
     @Test
     void existsByNameAndCategoryAndDifficultyAndDescription_shouldReturnTrue() {

@@ -12,6 +12,6 @@
   },
   "private": true,
   "dependencies": {
-    "daisyui": "^4.7.3"
+    "daisyui": "latest"
   }
 }

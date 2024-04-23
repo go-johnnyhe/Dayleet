@@ -11,6 +11,208 @@
     <title>Editor</title>
     <link rel="stylesheet" th:href="@{/dist/styles.css}">
     <link rel="icon" type="image/png" href="/icons8-smile-48.png">
+    <style>
+        dialog.modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /*background-color: rgba(0, 0, 0, 0.5);*/
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            width: 30%;
+            height: 30%;
+            margin: 0;
+        }
+
+        dialog.modal[open] {
+            opacity: 1;
+            width: 30%;
+            height: 30%;
+            border-radius: 0.5em;
+            pointer-events: auto;
+        }
+
+        dialog.modal .modal-box {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: auto;
+        }
+
+
+        .confetti {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1000;
+            pointer-events: none;
+            --confetti-animation-duration: 3s;
+            --confetti-animation-play-state: running;
+        }
+
+        .confetti.paused {
+            --confetti-animation-play-state: paused;
+        }
+
+        @keyframes makeItRain {
+            from {opacity: 0;}
+            50% {opacity: 1;}
+            to {transform: translateY(350px);}
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: #ffd300;
+            top: 0;
+            opacity: 0;
+            animation: makeItRain var(--confetti-animation-duration) ease-out forwards;
+            animation-play-state: var(--confetti-animation-play-state);
+        }
+
+        .confetti-piece:nth-child(1) {
+            left: 7%;
+            transform: rotate(-40deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 182ms;
+            animation-duration: 1116ms;
+        }
+
+        .confetti-piece:nth-child(2) {
+            left: 14%;
+            transform: rotate(4deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 161ms;
+            animation-duration: 1076ms;
+        }
+
+        .confetti-piece:nth-child(3) {
+            left: 21%;
+            transform: rotate(-51deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 481ms;
+            animation-duration: 1103ms;
+        }
+
+        .confetti-piece:nth-child(4) {
+            left: 28%;
+            transform: rotate(61deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 334ms;
+            animation-duration: 708ms;
+        }
+
+        .confetti-piece:nth-child(5) {
+            left: 35%;
+            transform: rotate(-52deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 302ms;
+            animation-duration: 776ms;
+        }
+
+        .confetti-piece:nth-child(6) {
+            left: 42%;
+            transform: rotate(38deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 180ms;
+            animation-duration: 1168ms;
+        }
+
+        .confetti-piece:nth-child(7) {
+            left: 49%;
+            transform: rotate(11deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 395ms;
+            animation-duration: 1200ms;
+        }
+
+        .confetti-piece:nth-child(8) {
+            left: 56%;
+            transform: rotate(49deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 14ms;
+            animation-duration: 887ms;
+        }
+
+        .confetti-piece:nth-child(9) {
+            left: 63%;
+            transform: rotate(-72deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 149ms;
+            animation-duration: 805ms;
+        }
+
+        .confetti-piece:nth-child(10) {
+            left: 70%;
+            transform: rotate(10deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 351ms;
+            animation-duration: 1059ms;
+        }
+
+        .confetti-piece:nth-child(11) {
+            left: 77%;
+            transform: rotate(4deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 307ms;
+            animation-duration: 1132ms;
+        }
+
+        .confetti-piece:nth-child(12) {
+            left: 84%;
+            transform: rotate(42deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 464ms;
+            animation-duration: 776ms;
+        }
+
+        .confetti-piece:nth-child(13) {
+            left: 91%;
+            transform: rotate(-72deg);
+            animation: makeItRain 1000ms infinite ease-out;
+            animation-delay: 429ms;
+            animation-duration: 818ms;
+        }
+
+        /* ... (repeat for the remaining confetti pieces) */
+
+        .confetti-piece:nth-child(odd) {
+            background: #7431e8;
+        }
+
+        .confetti-piece:nth-child(even) {
+            z-index: 1;
+        }
+
+        .confetti-piece:nth-child(4n) {
+            width: 5px;
+            height: 12px;
+            animation-duration: 2000ms;
+        }
+
+        .confetti-piece:nth-child(3n) {
+            width: 3px;
+            height: 10px;
+            animation-duration: 2500ms;
+            animation-delay: 1000ms;
+        }
+
+        .confetti-piece:nth-child(4n-7) {
+            background: red;
+        }
+    </style>
 </head>
 <body class="bg-gray-100" hx-headers='js:{"X-CSRF-TOKEN": token}'>
 <nav class="w-full flex items-center justify-between px-4 py-2 glassmorphism text-white shadow-md">
@@ -44,13 +246,41 @@
                 hx-trigger="click"
                 id="run2Button"
                 class="btn btn-primary w-full">Run</button>
-<!--        <button onclick="executeCode2()" class="btn btn-primary w-full">Run2!</button>-->
     </div>
-<!--    <div class="mb-6 bg-gray-200 p-4 rounded">-->
-<!--        <pre id="output" class="whitespace-pre-wrap overflow-auto max-h-60"></pre>-->
-<!--    </div>-->
+
     <div id="testCaseResults" class="bg-gray-100 p-4 rounded shadow-md max-h-96 overflow-auto"></div>
 </div>
+<dialog id="ratingModal" class="modal rounded">
+    <div id="pop" class="confetti">
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+        <div class="confetti-piece"></div>
+    </div>
+    <div class="modal-box rounded">
+        <h3 class="font-bold text-lg">Rate Your Experience</h3>
+        <p class="py-4">Please rate your experience with the problem on a scale of 1-5.</p>
+        <select id="ratingSelect" class="select select-bordered w-full max-w-xs mb-4">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+        <div class="modal-action">
+            <button id="submitRatingBtn" class="btn btn-primary">Submit</button>
+            <button id="cancelRatingBtn" class="btn">Cancel</button>
+        </div>
+    </div>
+</dialog>
 <script th:inline="javascript">
     const token = /*[[${_csrf.token}]]*/ "token";
 
@@ -64,6 +294,77 @@
     editor.setValue(placeholder);
     editor.clearSelection();
 
+    let animate_active = true;
+
+    function animateConfetti() {
+        if (animate_active) {
+            requestAnimationFrame(animateConfetti);
+        } else {
+            const confettiContainer = document.getElementById("pop");
+            confettiContainer.remove(); // Remove the confetti container when animation is stopped
+        }
+    }
+
+    document.addEventListener('htmx:afterOnLoad', function(event) {
+        if (event.detail.target.id === 'testCaseResults') {
+            const testCaseResults = document.querySelectorAll('#testCaseResults .text-red-500');
+            if (testCaseResults.length === 0) {
+                const modal = document.getElementById('ratingModal');
+                modal.showModal();
+                animate_active = true;
+                animateConfetti();
+
+                // Stop the confetti animation after 3 seconds
+                setTimeout(function() {
+                    animate_active = false;
+                }, 3000);
+            }
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const confettiContainer = document.querySelector('.confetti');
+
+        setTimeout(function() {
+            confettiContainer.classList.add('paused');
+        }, 3000); // 3000 milliseconds = 3 seconds
+    });
+
+    document.getElementById('submitRatingBtn').addEventListener('click', function() {
+        const rating = parseInt(document.getElementById('ratingSelect').value, 10);
+        fetch('/submit-rating', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
+            },
+            body: JSON.stringify({rating: rating, problemId: problemId})
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Parse JSON only if response is OK and has content
+                }
+                throw new Error('Something went wrong on api server!');
+            })
+            .then(data => {
+                console.log('Rating submitted:', data);
+                const modal = document.getElementById('ratingModal');
+                modal.close();  // Close the modal after successful submission
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+
+    document.getElementById('cancelRatingBtn').addEventListener('click', function() {
+        const modal = document.getElementById('ratingModal');
+        modal.close();
+
+        // const confettiContainer = document.getElementById("pop");
+        // confettiContainer.classList.add("paused"); // Pause the animation
+    });
+
 </script>
+
 </body>
 </html>

@@ -6,7 +6,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <changeSet id="create-tables" author="Johnny">
-        <validCheckSum>9:fe6f324aff25eb3aa0f13b0732eb7f70</validCheckSum>
+        <validCheckSum>9:f89c52f9ef951e1ead8dab22bdcecbad</validCheckSum>
         <createTable tableName="question">
             <column name="id" type="INT" autoIncrement="true">
                 <constraints primaryKey="true"/>
@@ -91,11 +91,12 @@
             <column name="last_review_date" type="DATE"/>
             <column name="next_review_date" type="DATE"/>
             <column name="ease_factor" type="DOUBLE"/>
-            <column name="review_interval" type="INT"/>
+            <column name="review_interval" type="DOUBLE"/>
             <column name="repetition" type="INT"/>
             <column name="score" type="INT"/>
             <column name="user_id" type="INT"/>
             <column name="question_id" type="INT"/>
+            <column name="review_status" type="VARCHAR(50)"/>
         </createTable>
 
         <createTable tableName="test_case_print_statement">

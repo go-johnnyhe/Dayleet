@@ -21,7 +21,7 @@ public class userProgress {
     private LocalDate lastReviewDate;
     private LocalDate nextReviewDate;
     private double easeFactor;
-    private int reviewInterval;
+    private double reviewInterval;
     private int repetition;
     private int score;
 
@@ -32,6 +32,9 @@ public class userProgress {
     @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private question question;
+
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus = ReviewStatus.valueOf("Untouched");
 
     @Override
     public String toString() {

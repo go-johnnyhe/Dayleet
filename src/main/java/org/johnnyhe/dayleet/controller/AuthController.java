@@ -7,6 +7,7 @@ import org.johnnyhe.dayleet.service.Judge0Service;
 import org.johnnyhe.dayleet.service.Judge0Service2;
 import org.johnnyhe.dayleet.service.ProblemService;
 import org.johnnyhe.dayleet.service.UserDetailsServiceImpl;
+import org.johnnyhe.dayleet.service.UserProgressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +33,10 @@ public class AuthController {
     private final Judge0Service myJudge0Service;
     private final Judge0Service2 myJudge0Service2;
 
+    private final UserProgressService myUserProgressService;
+
     @Autowired
-    public AuthController(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder, userRepo myUserRepo, questionListRepo myQuestionListRepo, questionRepo myQuestionRepo, questionPlaceholderRepo myQuestionPlaceHolderRepo, codingLangRepo myCodingLangRepo, ProblemService problemService, Judge0Service myJudge0Service, Judge0Service2 myJudge0Service2) {
+    public AuthController(UserDetailsServiceImpl userDetailsService, PasswordEncoder passwordEncoder, userRepo myUserRepo, questionListRepo myQuestionListRepo, questionRepo myQuestionRepo, questionPlaceholderRepo myQuestionPlaceHolderRepo, codingLangRepo myCodingLangRepo, ProblemService problemService, Judge0Service myJudge0Service, Judge0Service2 myJudge0Service2, UserProgressService myUserProgressService) {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.myUserRepo = myUserRepo;
@@ -44,6 +47,7 @@ public class AuthController {
         this.problemService = problemService;
         this.myJudge0Service = myJudge0Service;
         this.myJudge0Service2 = myJudge0Service2;
+        this.myUserProgressService = myUserProgressService;
     }
 
     @GetMapping("/")
@@ -64,6 +68,7 @@ public class AuthController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new user());
+        System.out.println("registration you smart ass!");
         return "register";
     }
 
@@ -78,7 +83,15 @@ public class AuthController {
     @GetMapping("/dashboard")
     public String showDashboard(Principal principal, Model model) {
         String username = principal.getName();
-        user myUser = myUserRepo.findByUsername(username);
+        Optional<user> myUserOpt = myUserRepo.findByUsername(username);
+
+        // Handle the case where the user is not found
+        if (!myUserOpt.isPresent()) {
+            // Potentially redirect to a login page or error page
+            return "redirect:/login";
+        }
+
+        user myUser = myUserOpt.get();
         if (!myUser.isCompletedSetup()) {
             return "redirect:/setup";
         }
@@ -88,8 +101,13 @@ public class AuthController {
         List<questionList> questionList = myQuestionListRepo.findByQuestionCollection_Name(selectedQuestionSet);
         model.addAttribute("questionList", questionList);
 
+        int userId = myUser.getId();
+        List<question> reviewQuestions = myUserProgressService.getReviewQuestions(userId);
+        model.addAttribute("reviewQuestions", reviewQuestions);
+
         return "dashboard";
     }
+
 
     @GetMapping("/setup")
     public String showSetupPage(Model model) {
@@ -103,7 +121,15 @@ public class AuthController {
                                @RequestParam("completionDate") String completionDate,
                                Principal principal) {
         String username = principal.getName();
-        user myUser = myUserRepo.findByUsername(username);
+        Optional<user> myUserOpt = myUserRepo.findByUsername(username);
+
+        // Check if the user was found
+        if (!myUserOpt.isPresent()) {
+            // Redirect to a login or error page since the user must be logged in to set up
+            return "redirect:/login";
+        }
+
+        user myUser = myUserOpt.get();
 
         myUser.setQuestionSet(questionSet);
         myUser.setNumDailyProblems(newQuestionsPerDay);
@@ -113,6 +139,7 @@ public class AuthController {
         myUserRepo.save(myUser);
         return "redirect:/dashboard";
     }
+
 
 //    @GetMapping("/problem")
 //    public String showEditor() {
@@ -158,25 +185,14 @@ public class AuthController {
     }
 
     @PostMapping("/submit-rating")
-    public String submitRating(@RequestParam("rating") int rating,
-                               @RequestParam("problemId") int problemId,
-                               Principal principal) {
+    public ResponseEntity<?> submitRating(@RequestBody RatingDTO ratingDto, Principal principal) {
         String username = principal.getName();
-        user myUser = myUserRepo.findByUsername(username);
-        question problem = myQuestionRepo.findById((long) problemId).orElse(null);
-
-        if (myUser != null && problem != null) {
-            userProgress progress = new userProgress();
-            progress.setUser(myUser);
-            progress.setQuestion(problem);
-            progress.setScore(rating);
-            // TODO: Set other properties of userProgress as needed
-
-            // Save the user progress
-            // TODO: Implement the userProgressRepo and save the progress
+        Optional<user> myUser = myUserRepo.findByUsername(username);
+        if (myUser.isPresent()) {
+            myUserProgressService.submitRating((long) myUser.get().getId(), (long) ratingDto.getProblemId(), ratingDto.getRating());
+            return ResponseEntity.ok("{\"message\": \"Rating submitted successfully\"}"); // Send back a simple JSON message
         }
-
-        return "redirect:/dashboard";
+        return ResponseEntity.badRequest().body("{\"error\": \"User not found\"}");
     }
 
 }

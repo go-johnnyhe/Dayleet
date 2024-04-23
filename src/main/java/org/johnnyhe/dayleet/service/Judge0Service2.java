@@ -27,6 +27,19 @@ public class Judge0Service2 {
     private final questionRepo myQuestionRepo;
     private final codingLangRepo myCodingLangRepo;
 
+    private static final String COMMON_PYTHON_IMPORTS =
+            "from math import sqrt, ceil, floor, pow, fabs\n" +
+                    "from heapq import heappush, heappop, heapify\n" +
+                    "from collections import defaultdict, Counter, deque\n" +
+                    "from itertools import permutations, combinations, product\n" +
+                    "from functools import lru_cache, reduce\n" +
+                    "from bisect import bisect_left, bisect_right\n" +
+                    "import sys\n" +
+                    "import os\n" +
+                    "from re import search, match, findall\n" +
+                    "import string\n" +
+                    "from random import randint, choice, shuffle\n";
+
     @Autowired
     public Judge0Service2(TestCasePrintStatementRepo myTestCasePrintStatementRepo, RestTemplate myRestTemplate, questionRepo myQuestionRepo, codingLangRepo myCodingLangRepo) {
         this.myTestCasePrintStatementRepo = myTestCasePrintStatementRepo;
@@ -54,7 +67,8 @@ public class Judge0Service2 {
 
         System.out.println("Here are my print statements:");
         System.out.println(printStatements);
-        StringBuilder fullCode = new StringBuilder(userCode);
+        StringBuilder fullCode = new StringBuilder(COMMON_PYTHON_IMPORTS);
+        fullCode.append(userCode);
 
         //add a new line before appending test cases
         if (!userCode.endsWith("\n")) {
@@ -66,18 +80,6 @@ public class Judge0Service2 {
         printStatements.forEach(printStatement -> {
             fullCode.append(printStatement.getPrintStatement()).append("\n");
         });
-//        printStatements.forEach(printStatement -> {
-//            if (question.getName().equals("Merge Two Sorted Lists")) {
-//                // For "Merge Two Sorted Lists" question, add newline and indentation for each line
-//                String[] lines = printStatement.getPrintStatement().split("\n");
-//                for (String line : lines) {
-//                    fullCode.append("\n    ").append(line.trim());
-//                }
-//            } else {
-//                // For other questions, append the print statement as-is
-//                fullCode.append("\n").append(printStatement.getPrintStatement());
-//            }
-//        });
 
         System.out.println("Here is the final code:");
         System.out.println(fullCode);

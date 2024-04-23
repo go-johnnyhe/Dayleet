@@ -31,22 +31,25 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/dist/**").permitAll()
                         .requestMatchers("/", "/home", "/register", "/login").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(formLogin ->
-                        formLogin
+                .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .defaultSuccessUrl("/dashboard", true)
                         .permitAll())
-                .logout(logout -> {
-                            logout.invalidateHttpSession(true)
-                                    .clearAuthentication(true)
-                                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                                    .logoutSuccessUrl("/login?logout").permitAll();
-        })
+                .logout(logout -> logout
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login?logout").permitAll())
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/error"))
                 .userDetailsService(userDetailsService);
+
         return http.build();
     }
 }
