@@ -105,6 +105,9 @@ public class AuthController {
         List<question> reviewQuestions = myUserProgressService.getReviewQuestions(userId);
         model.addAttribute("reviewQuestions", reviewQuestions);
 
+        List<question> newQuestions = myUserProgressService.getNewQuestions(userId);
+        model.addAttribute("newQuestions", newQuestions);
+
         return "dashboard";
     }
 

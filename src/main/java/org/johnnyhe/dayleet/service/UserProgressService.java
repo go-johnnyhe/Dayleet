@@ -79,22 +79,19 @@ public class UserProgressService {
     }
 
 
+    // display new questions to users
+    public List<question> getNewQuestions(int userId) {
+        List<question> allQuestions = myQuestionRepo.findAll();
+        List<userProgress> userProgresses = myUserProgressRepo.findByUserId(userId);
 
-    // get all new untouched questions
-    // check interval for review questions
-    // show question in database is untouched
-//    public List<question> getNewQuestions(int userId) {
-//        List<question> allQuestions = myQuestionRepo.findAll();
-//        List<userProgress> userProgresses = myUserProgressRepo.findByUserId(userId);
-//
-//        Set<Integer> touchedQuestionIds = userProgresses.stream()
-//                .map(up -> up.getQuestion().getId())
-//                .collect(Collectors.toSet());
-//
-//        return allQuestions.stream()
-//                .filter(q -> !touchedQuestionIds.contains(q.getId()))
-//                .collect(Collectors.toList());
-//    }
+        Set<Integer> touchedQuestionIds = userProgresses.stream()
+                .map(up -> up.getQuestion().getId())
+                .collect(Collectors.toSet());
+
+        return allQuestions.stream()
+                .filter(q -> !touchedQuestionIds.contains(q.getId()))
+                .collect(Collectors.toList());
+    }
 
 //    helper here
 private void applySm2Algorithm(userProgress up, int score) {

@@ -127,9 +127,36 @@
         </table>
     </div>
 
-<br>
+    <br>
+
+    <div class="overflow-x-auto mt-8">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">New Untouched Questions</h2>
+        <table class="table w-full">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="untouched : ${newQuestions}">
+                <td>
+                    <a th:href="@{/problem/{id}(id=${untouched.id})}" th:text="${untouched.name}">Question Name</a>
+                </td>
+                <td th:text="${untouched.category}">Category</td>
+                <td th:text="${untouched.difficulty}">Difficulty</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <br>
     <!-- Table -->
     <div class="overflow-x-auto">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">All Questions</h2>
         <table class="table w-full">
             <thead>
             <tr>
